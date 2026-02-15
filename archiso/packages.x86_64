@@ -1,7 +1,7 @@
 # Base system
 base
 linux
-linux-firmware-minimal
+linux-firmware
 mkinitcpio
 mkinitcpio-archiso
 
@@ -23,7 +23,7 @@ npm
 xorg-server
 xorg-xinit
 xterm
-surf
+firefox
 
 # Recovery and system tools
 parted
