@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
 
     permissions:
       contents: write
@@ -18,14 +20,14 @@ jobs:
 
       - name: Set up build environment
         run: |
-          sudo apt-get update
-          sudo apt-get install -y archiso
-          sudo chmod +x build.sh archiso/profiledef.sh
+          pacman -Syu --noconfirm
+          pacman -S --needed --noconfirm archiso
+          chmod +x build.sh archiso/profiledef.sh
 
       - name: Build ISO
         run: |
           mkdir -p out
-          sudo ./build.sh
+          ./build.sh
 
       - name: List output
         run: |
@@ -74,14 +76,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create comment on failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '❌ Build failed! Check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
-            })
