@@ -1,0 +1,87 @@
+name: Build AI Recovery Linux ISO
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up build environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y archiso
+          sudo chmod +x build.sh archiso/profiledef.sh
+
+      - name: Build ISO
+        run: |
+          mkdir -p out
+          sudo ./build.sh
+
+      - name: List output
+        run: |
+          ls -lh out/
+          echo "ISO_FILE=$(ls -1 out/*.iso | head -n1)" >> $GITHUB_ENV
+          echo "ISO_SIZE=$(ls -lh out/*.iso | awk '{print $5}')" >> $GITHUB_ENV
+
+      - name: Upload to Release
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            out/ai-recovery-linux-*.iso
+            out/ai-recovery-linux-*.md5
+          tag_name: build-${{ github.run_number }}
+          name: AI Recovery Linux ISO Build #${{ github.run_number }}
+          body: |
+            ## Build Successful! ✅
+
+            **ISO File:** `${{ env.ISO_FILE }}`
+            **Size:** `${{ env.ISO_SIZE }}`
+
+            ### Download
+            The ISO is ready to download and flash to USB/SD card.
+
+            ```bash
+            # Flash with dd:
+            sudo dd if=ai-recovery-linux-*.iso of=/dev/sdX bs=4M status=progress sync
+
+            # Or use balena-etcher: https://www.balena.io/etcher/
+            ```
+
+            ### Verify Checksum
+            ```bash
+            md5sum -c ai-recovery-linux-*.md5
+            ```
+
+            ### Usage
+            1. Boot from USB
+            2. Auto-login as root
+            3. Claude Code starts automatically
+            4. Browser opens for Anthropic authentication
+            5. Terminal ready for system recovery
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create comment on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Build failed! Check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            })

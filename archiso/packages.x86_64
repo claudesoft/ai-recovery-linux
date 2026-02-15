@@ -1,0 +1,48 @@
+# Base system
+base
+linux
+linux-firmware-minimal
+mkinitcpio
+mkinitcpio-archiso
+
+# Boot loader
+syslinux
+systemd
+
+# Networking
+dhcpcd
+iwd
+wpa_supplicant
+net-tools
+
+# Node.js and npm for Claude Code
+nodejs-lts
+npm
+
+# Browser and X11 for Claude authentication
+xorg-server
+xorg-xinit
+xterm
+surf
+
+# Recovery and system tools
+parted
+e2fsprogs
+ntfs-3g
+dosfstools
+rsync
+arch-install-scripts
+tar
+gzip
+bzip2
+xz
+lz4
+zstd
+
+# Additional utilities
+nano
+less
+openssh
+wget
+curl
+htop
