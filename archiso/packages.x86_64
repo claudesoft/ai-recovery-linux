@@ -29,8 +29,10 @@ ttf-dejavu
 xdg-utils
 mesa
 
-# Recovery and system tools
-parted
+# Debugging and Early Boot
+haveged
+mkinitcpio-netconf
+mkinitcpio-nfs-utils
 e2fsprogs
 ntfs-3g
 dosfstools
