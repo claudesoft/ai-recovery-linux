@@ -43,6 +43,13 @@ handle_error() {
     exit $exit_code
 }
 
+# Detect if we need sudo
+if [ "$EUID" -eq 0 ]; then
+    SUDO=""
+else
+    SUDO="sudo"
+fi
+
 # Start
 log_section "AI Recovery Linux - ISO Builder v1.0"
 log "${BLUE}Starting build process...${NC}"
@@ -79,7 +86,7 @@ done
 
 if [ ${#MISSING_PACKAGES[@]} -gt 0 ]; then
     log "  → Installing missing packages: ${MISSING_PACKAGES[*]}"
-    if ! sudo pacman -S --needed --noconfirm "${MISSING_PACKAGES[@]}" 2>&1 | tee -a "$LOG_FILE"; then
+    if ! $SUDO pacman -S --needed --noconfirm "${MISSING_PACKAGES[@]}" 2>&1 | tee -a "$LOG_FILE"; then
         log "${RED}Failed to install packages${NC}"
         exit 1
     fi
@@ -108,7 +115,7 @@ fi
 # Clean old builds
 if [ -d "$WORK_DIR" ]; then
     log "  → Cleaning previous work directory..."
-    sudo rm -rf "$WORK_DIR" 2>&1 | tee -a "$LOG_FILE"
+    $SUDO rm -rf "$WORK_DIR" 2>&1 | tee -a "$LOG_FILE"
 fi
 
 mkdir -p "$OUT_DIR"
@@ -150,7 +157,7 @@ log "Step 6/7: Building ISO..."
 log "${BLUE}This may take 10-30 minutes (downloads ~500MB of packages)${NC}"
 log ""
 
-if ! sudo mkarchiso -v -w "$WORK_DIR" -o "$OUT_DIR" "$SCRIPT_DIR/archiso" 2>&1 | tee -a "$LOG_FILE"; then
+if ! $SUDO mkarchiso -v -w "$WORK_DIR" -o "$OUT_DIR" "$SCRIPT_DIR/archiso" 2>&1 | tee -a "$LOG_FILE"; then
     log ""
     log "${RED}ISO build failed!${NC}"
     log ""
