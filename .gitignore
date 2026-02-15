@@ -1,0 +1,15 @@
+# Build output
+out/
+work/
+
+# Claude Code settings
+.claude/
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Build logs
+*.log
