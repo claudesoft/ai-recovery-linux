@@ -17,13 +17,12 @@ LABEL version="1.0"
 
 # Workaround: Disable pacman sandbox checking to fix macOS Docker seccomp issue
 # This modifies pacman.conf to skip signature verification which avoids sandbox syscalls
-RUN mkdir -p /etc/pacman.d/gnupg && \
-    sed -i 's/SigLevel    = Required DatabaseOptional/SigLevel = Never/' /etc/pacman.conf && \
-    pacman-key --init 2>/dev/null || true && \
-    pacman -Sy --noconfirm \
+RUN pacman -Sy --noconfirm && \
+    pacman -S --needed --noconfirm \
       archiso \
+      arch-install-scripts \
       base \
-      base-devel 2>&1 | head -100 || true && \
+      base-devel && \
     pacman -Sc --noconfirm
 
 # Setup build environment
