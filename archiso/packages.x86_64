@@ -24,6 +24,10 @@ xorg-server
 xorg-xinit
 xterm
 firefox
+openbox
+ttf-dejavu
+xdg-utils
+mesa
 
 # Recovery and system tools
 parted

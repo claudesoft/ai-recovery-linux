@@ -60,34 +60,24 @@ else
     echo "  ⚠ X11 not available - browser auth may not work"
 fi
 
-# 4. Launch Claude Code
+# 4. Launch Graphical Environment
 echo
-echo "[4/4] Starting Claude Code..."
+echo "[4/4] Starting Graphical Environment..."
 echo
 cat << "EOF"
 ╔════════════════════════════════════════════════════╗
 ║                                                    ║
-║  🌐 Browser will open for Anthropic login        ║
+║  🚀 Starting X11...                                ║
 ║                                                    ║
-║  After successful authentication, you'll be       ║
-║  returned to this terminal to recover/repair      ║
-║  your system.                                      ║
-║                                                    ║
-║  Available tools:                                  ║
-║  • parted, fdisk, lsblk - Disk management         ║
-║  • fsck, e2fsck - Filesystem repair               ║
-║  • chroot, arch-chroot - System repair            ║
-║  • mount, umount - Mount operations                ║
-║  • rsync - Backup/restore                         ║
+║  A terminal will open with Claude Code.            ║
+║  Firefox will open for authentication.             ║
 ║                                                    ║
 ╚════════════════════════════════════════════════════╝
 EOF
 echo
 sleep 2
 
-# Start Claude Code with proper environment
-export DISPLAY=${DISPLAY:-:0}
-export XAUTHORITY=${XAUTHORITY:-$HOME/.Xauthority}
+# Start X11
+# This will read ~/.xinitrc, which starts Openbox and xterm->Claude
+exec startx
 
-# Launch Claude Code
-exec claude "$@"
