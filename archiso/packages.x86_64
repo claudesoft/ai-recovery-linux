@@ -44,6 +44,7 @@ lz4
 zstd
 
 # Additional utilities
+zram-generator
 nano
 less
 openssh
