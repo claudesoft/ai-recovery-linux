@@ -17,6 +17,9 @@ airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' 
 # File permissions for important scripts
 file_permissions=(
   ["/etc/shadow"]="0:0:400"
+  ["/etc/gshadow"]="0:0:400"
+  ["/etc/passwd"]="0:0:644"
+  ["/etc/group"]="0:0:644"
   ["/root"]="0:0:750"
   ["/root/init-recovery.sh"]="0:0:755"
   ["/usr/local/bin/setup-claude.sh"]="0:0:755"
